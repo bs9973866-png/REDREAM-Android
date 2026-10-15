@@ -57,6 +57,14 @@ jobs:
           echo "### REDREAM engine build" >> "$GITHUB_STEP_SUMMARY"
           echo "This APK is built from the upstream ZalithLauncher2/PojavLauncher engine with REDREAM app-name configuration. The custom REDREAM HTML interface and this engine are not integrated yet." >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Build bundled Java runtime components
+        working-directory: engine
+        shell: bash
+        run: |
+          chmod +x gradlew
+          mkdir -p out
+          ./gradlew --no-daemon jre_lwjgl3glfw:build
+
       - name: Build Android APK (arm64)
         working-directory: engine
         shell: bash
