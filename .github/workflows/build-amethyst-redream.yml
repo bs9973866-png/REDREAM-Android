@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AngelAuraMC/Amethyst-Android
-          ref: main
+          ref: v3_openjdk
           path: amethyst
           submodules: recursive
 
