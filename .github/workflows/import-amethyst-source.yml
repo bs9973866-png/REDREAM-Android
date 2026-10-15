@@ -1,0 +1,61 @@
+name: Import Amethyst source into REDREAM
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout REDREAM
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download upstream source
+        uses: actions/checkout@v4
+        with:
+          repository: AngelAuraMC/Amethyst-Android
+          ref: v3_openjdk
+          path: /tmp/amethyst-source
+          submodules: recursive
+
+      - name: Import source files into repository root
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Keep REDREAM-owned workflows while replacing the placeholder repository
+          # contents with the actual Amethyst source tree.
+          mkdir -p /tmp/redream-workflows
+          if [ -d .github/workflows ]; then
+            cp -a .github/workflows /tmp/redream-workflows/workflows
+          fi
+          rsync -a --delete --exclude='.git' /tmp/amethyst-source/ ./
+          mkdir -p .github
+          if [ -d /tmp/redream-workflows/workflows ]; then
+            mkdir -p .github/workflows
+            cp -a /tmp/redream-workflows/workflows/. .github/workflows/
+          fi
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("app_pojavlauncher/build.gradle")
+          if p.exists():
+              s = p.read_text()
+              s = s.replace("org.angelauramc.amethyst", "com.redream.launcher")
+              s = s.replace('"Amethyst (Debug)"', '"REDREAM (Debug)"')
+              s = s.replace('"Amethyst"', '"REDREAM"')
+              p.write_text(s)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No source changes to import."
+            exit 0
+          fi
+          git commit -m "Import Amethyst Android source and apply REDREAM package branding"
+          git push
