@@ -39,6 +39,20 @@ jobs:
       - name: Accept Android SDK licenses
         run: yes | sdkmanager --licenses || true
 
+      - name: Apply REDREAM branding and package ID
+        working-directory: amethyst
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("app_pojavlauncher/build.gradle")
+          s = p.read_text()
+          s = s.replace("org.angelauramc.amethyst", "com.redream.launcher")
+          s = s.replace('"Amethyst (Debug)"', '"REDREAM (Debug)"')
+          s = s.replace('"Amethyst"', '"REDREAM"')
+          p.write_text(s)
+          PY
+
       - name: Build Android launcher
         working-directory: amethyst
         run: |
