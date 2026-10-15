@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: redream-source-import
+  cancel-in-progress: false
+
 jobs:
   import-source:
     runs-on: ubuntu-latest
@@ -53,6 +57,7 @@ jobs:
               s = s.replace('"Amethyst"', '"REDREAM"')
               p.write_text(s)
           PY
+          rm -rf amethyst-source
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f -A
@@ -61,4 +66,5 @@ jobs:
             exit 0
           fi
           git commit -m "Import Amethyst Android source and apply REDREAM package branding"
+          git pull --rebase origin main
           git push
