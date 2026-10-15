@@ -48,7 +48,7 @@ jobs:
           from pathlib import Path
           p = Path("app_pojavlauncher/build.gradle")
           s = p.read_text()
-          s = s.replace("compileSdk = 37", "compileSdk = 36")
+          s = s.replace("compileSdk = 37", """compileSdk {\n        version = release(36) {\n            minorApiLevel = 1\n        }\n    }""")
           s = s.replace('"amethyst-legacy-"', '"redream-"')
           p.write_text(s)
           PY
