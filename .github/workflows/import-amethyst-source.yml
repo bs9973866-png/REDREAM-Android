@@ -2,6 +2,9 @@ name: Import Amethyst source into REDREAM
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import-amethyst-source.yml'
 
 permissions:
   contents: write
