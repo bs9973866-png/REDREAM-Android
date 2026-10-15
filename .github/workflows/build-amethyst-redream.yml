@@ -1,0 +1,53 @@
+name: Build REDREAM from Amethyst
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build-amethyst-redream.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout REDREAM build configuration
+        uses: actions/checkout@v4
+
+      - name: Checkout Amethyst Android source
+        uses: actions/checkout@v4
+        with:
+          repository: AngelAuraMC/Amethyst-Android
+          ref: main
+          path: amethyst
+          submodules: recursive
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+          cache-dependency-path: amethyst/**/*.gradle*
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Build Android launcher
+        working-directory: amethyst
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon :app_pojavlauncher:assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: REDREAM-Amethyst-debug
+          path: amethyst/app_pojavlauncher/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
