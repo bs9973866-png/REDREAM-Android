@@ -24,7 +24,7 @@ jobs:
         with:
           repository: AngelAuraMC/Amethyst-Android
           ref: v3_openjdk
-          path: /tmp/amethyst-source
+          path: amethyst-source
           submodules: recursive
 
       - name: Import source files into repository root
@@ -37,7 +37,7 @@ jobs:
           if [ -d .github/workflows ]; then
             cp -a .github/workflows /tmp/redream-workflows/workflows
           fi
-          rsync -a --delete --exclude='.git' /tmp/amethyst-source/ ./
+          rsync -a --delete --exclude='.git' amethyst-source/ ./
           mkdir -p .github
           if [ -d /tmp/redream-workflows/workflows ]; then
             mkdir -p .github/workflows
