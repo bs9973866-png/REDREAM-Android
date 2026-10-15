@@ -55,6 +55,7 @@ jobs:
           s = s.replace("org.angelauramc.amethyst", "com.redream.launcher")
           s = s.replace('"Amethyst (Debug)"', '"REDREAM (Debug)"')
           s = s.replace('"Amethyst"', '"REDREAM"')
+          s = s.replace("compileSdk = 37", "compileSdk = 36")
           p.write_text(s)
           PY
 
