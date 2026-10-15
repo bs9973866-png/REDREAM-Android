@@ -41,7 +41,7 @@ jobs:
           if [ -d .github/workflows ]; then
             cp -a .github/workflows /tmp/redream-workflows/workflows
           fi
-          rsync -a --delete --exclude='.git' --exclude='amethyst-source' amethyst-source/ ./
+          rsync -a --delete --exclude='.git' --exclude='amethyst-source' --exclude='.github/workflows' amethyst-source/ ./
           mkdir -p .github
           if [ -d /tmp/redream-workflows/workflows ]; then
             mkdir -p .github/workflows
