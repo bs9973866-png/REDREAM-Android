@@ -33,8 +33,11 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses
+        shell: bash
+        run: |
+          set +o pipefail
+          yes | "${ANDROID_HOME:-$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager}" --licenses >/dev/null 2>&1 || true
 
       - name: Apply REDREAM branding
         working-directory: engine
